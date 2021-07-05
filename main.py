@@ -16,9 +16,10 @@ def main():
 #        inscription.create_db()
         inscription.con(fname,lname,age)
 
-    print("Training the Model...")
-    trainModel()
-    print("face recognition....")
+        print("Training the Model...")
+        trainModel()
+        print("face recognition....")
+        
     face_rec.faceRec()
 
     

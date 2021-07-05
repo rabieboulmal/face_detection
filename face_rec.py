@@ -17,7 +17,7 @@ def verification(name):
 	cnx = conn.cursor()
 	cnx.execute("SELECT * FROM Personne")
 	query = cnx.fetchall()
-	return [ (a,b,c,d) for a, b,c,d in query if b  == name ][0]
+	return [ (a,b,c,d) for a, b,c,d in query if b.lower()  == name.lower() ][0]
 	
 
 
@@ -27,7 +27,6 @@ def faceRec():
 	#Determine faces from encodings.pickle file model created from train_model.py
 	encodingsP = "encodings.pickle"
 	#use this xml file
-	#https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml
 	cascade = "haarcascade_frontalface_default.xml"
 
 	# load the known faces and embeddings along with OpenCV's Haar
@@ -48,9 +47,9 @@ def faceRec():
 	# loop over frames from the video file stream
 	while True:
 		# grab the frame from the threaded video stream and resize it
-		# to 500px (to speedup processing)
+		# to 600px (to speedup processing)
 		frame = vs.read()
-		frame = imutils.resize(frame, width=500)
+		frame = imutils.resize(frame, width=600)
 		
 		# convert the input frame from (1) BGR to grayscale (for face
 		# detection) and (2) from BGR to RGB (for face recognition)
@@ -110,24 +109,24 @@ def faceRec():
 		for ((top, right, bottom, left), name) in zip(boxes, names):
 			# draw the predicted face name on the image - color is in BGR
 				
-			cv2.rectangle(frame, (left, top), (right, bottom),
+			cv2.rectangle(frame, (left, top), (right + 25, bottom),
 					(0, 0, 255), 2)
-			y1 = top - 30 if top - 30 > 30 else top + 30
-			y2 = top - 10 if top - 10 > 10 else top + 10
+			#y1 = top - 30 if top - 30 > 30 else top + 30
+			#y2 = top - 10 if top - 10 > 10 else top + 10
 			
-			cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
+			cv2.rectangle(frame, (left, bottom - 25), (right + 25, bottom), (0, 0, 255), cv2.FILLED)
 			try:
 				infos = verification(name)
-				if verification(name):
-					cv2.putText(frame,"Nom : " + infos[1] + " " + infos[2], (left + 6, bottom - 6), cv2.FONT_HERSHEY_SIMPLEX,
-						.5, (255, 255, 255), 1)
-					cv2.putText(frame,"Age: " + infos[3] + " ans", (left + 24, bottom - 24), cv2.FONT_HERSHEY_SIMPLEX,
-						.5, (255, 255, 255), 1)
-				else:
-					cv2.putText(frame, name, (left, y1), cv2.FONT_HERSHEY_SIMPLEX,
-			.8, (255, 0, 0), 2)
+				if infos:
+					cv2.putText(frame,"Nom  : " + infos[1] + " " + infos[2], (left + 16, bottom - 16), cv2.FONT_HERSHEY_SIMPLEX,
+						.4, (255, 255, 255), 1)
+					cv2.putText(frame,"Age: " + infos[3] + " ans", (left + 3 , bottom - 3), cv2.FONT_HERSHEY_SIMPLEX,
+						.4, (255, 255, 255), 1)
+				
+					
 			except IndexError as i:
-				print(i)
+				cv2.putText(frame, "Unknown", (left + 6, bottom - 6), cv2.FONT_HERSHEY_SIMPLEX,
+			.8, (255, 255, 255), 2)
 				pass
 		
 			
