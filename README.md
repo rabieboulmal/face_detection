@@ -1,2 +1,9 @@
 # face_detection
-Requirements
+## Requirements
+**opencv**
+
+**face_recognation**
+
+**pickle**
+
+**psycopg2**
